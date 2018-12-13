@@ -1,0 +1,102 @@
+body {
+    font: 14px Arial, sans-serif;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.timeLine {
+    border-radius: 2%;
+    background: white;
+    align-self: center;
+    margin-top: 2%;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 2%;
+    max-height: 100%;
+    max-width: 100%;
+    overflow: auto;
+    position: relative;
+}
+
+li {
+    background-color: #e6e6e6;
+    border-radius: 2%;
+    overflow: auto;
+    max-height: 100%;
+    max-width: 100%;
+    margin-top: 1.5%;
+    margin-right: 5%;
+}
+
+#left-content {
+	top: 3%;
+	bottom: 3%;
+	left: 2%;
+	background-color:#e6e6e6;
+	width:38.5%;
+	height:94%;
+	float:left;
+	position:relative;
+	border-radius: 2%;
+    max-height: 100%;
+}
+
+#right-content {
+	top: 3%;
+	bottom: 3%;
+	right: 2%;
+	background-color:#e6e6e6;
+	width:57%;
+	height:94%;
+	float:right;
+	position: relative;
+	border-radius: 2%;
+    max-height: 100vh;
+}
+
+.clock {
+	padding-top: 5%;
+	font-size: 8vw;
+}
+
+.date {
+	font-size: 3vw;
+}
+
+.year {
+	font-size: 3vw;
+}
+
+.companyLogo {
+	padding-top: 5%;
+	width: 30%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.buttonImage {
+	padding-bottom: 5%;
+	width: 70%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.bookButton {
+	position: absolute;
+	bottom: 4%;
+	left: 8%;
+	font-size: 14px;
+	width: 30%;
+	text-align: center;
+}
+
+.helpButton {
+	position: absolute;
+	bottom: 4%;
+	right: 8%;
+	font-size: 14px;
+	width: 30%;
+	text-align: center;
+}
