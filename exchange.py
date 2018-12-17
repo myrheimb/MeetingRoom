@@ -4,34 +4,35 @@ from exchangelib.folders import Calendar
 import loginCredentials
 import time
 
-# This is run to check if it is currently daylight saving time or not, and saves it into the variable dst.
-# If dst == 1 it's summer and if dst == 0 it's winter.
-dst = time.localtime().tm_isdst
+''' calendarIteration is a function that saves all of today's meetings into a dictionary, and all the busy times into a list called busyTimesFlat.
 
-calendarItems = []
-now = datetime.datetime.now()
-day, month, year = now.day, now.month, now.year
-tz = EWSTimeZone.timezone('Europe/Oslo')
+To check if it is currently daylight saving time or not, and saves it into the variable dst.
+If dst == 1 it's summer and if dst == 0 it's winter.
 
-credentials = Credentials(username=loginCredentials.login['username'], password=loginCredentials.login['password'])
-account = Account(loginCredentials.login['account'], credentials=credentials, autodiscover=True)
+It then gets the login credentials from the loginCredentials.py file and logs into Microsoft Exchange.
+After it's logged in, it saves all of today's meetings into a list called calendarItems.
+Lastly a for loop is run through the items in the calendarItems list and saves the meetings start and end times, title and organizer into the dictionary meetingDict.'''
 
-items = account.calendar.view(
-    start=tz.localize(EWSDateTime(year, month, day)),
-    end=tz.localize(EWSDateTime(year, month, day)) + datetime.timedelta(days=1),
-    )
-
-if dst == 0:
-    for item in items:
-        today_events = [item.start + datetime.timedelta(hours=1), item.end + datetime.timedelta(hours=1), item.subject, item.organizer]
-        calendarItems.append(today_events)
-else:
-    for item in items:
-        today_events = [item.start, item.end, item.subject, item.organizer]
-        calendarItems.append(today_events)
-
-# Function that saves all of today's meetings into a dictionary, and all the busy times into a list called busyTimesFlat.
 def calendarIteration():
+    dst = time.localtime().tm_isdst
+    calendarItems = []
+    now = datetime.datetime.now()
+    day, month, year = now.day, now.month, now.year
+    tz = EWSTimeZone.timezone('Europe/Oslo')
+    credentials = Credentials(username=loginCredentials.login['username'], password=loginCredentials.login['password'])
+    account = Account(loginCredentials.login['account'], credentials=credentials, autodiscover=True)
+    items = account.calendar.view(
+        start=tz.localize(EWSDateTime(year, month, day)),
+        end=tz.localize(EWSDateTime(year, month, day)) + datetime.timedelta(days=1),
+        )
+    if dst == 0:
+        for item in items:
+            today_events = [item.start + datetime.timedelta(hours=1), item.end + datetime.timedelta(hours=1), item.subject, item.organizer]
+            calendarItems.append(today_events)
+    else:
+        for item in items:
+            today_events = [item.start, item.end, item.subject, item.organizer]
+            calendarItems.append(today_events)
     startTimeName = 'meetingStartTime_'
     endTimeName = 'meetingEndTime_'
     titleName = 'meetingTitle_'
@@ -50,7 +51,7 @@ def calendarIteration():
             meetingDict[endTimeName+str(counter1)] = (str(calendarItems[counter0][1])[11:16])
             meetingDict[titleName+str(counter1)] = (calendarItems[counter0][2])
             meetingDict[organizerName+str(counter1)] = (calendarItems[counter0][3].name)
-            busyTimes = busyTimes+[list(range(int(meetingDict['meetingStartTime_'+str(counter1)].replace(":","")),int(meetingDict['meetingEndTime_'+str(counter1)].replace(":",""))+1))]
+            busyTimes = busyTimes+[list(range(int(meetingDict['meetingStartTime_'+str(counter1)].replace(':','')),int(meetingDict['meetingEndTime_'+str(counter1)].replace(':',''))+1))]
             busyTimesFlat = [item for sublist in busyTimes for item in sublist]
             counter0 = counter1
             counter1 = counter2
@@ -58,9 +59,10 @@ def calendarIteration():
         except:
                 pass
 
-# Function to book a meeting directly on the screen. Standard title is "Booked on screen".
-# The meeting start and end time is defined by the user when run.
-# To avoid double booking a check is run to see if the start and/or end time is in conflict with an already booked meeting.
+'''  bookMeeting is a function to book a meeting directly on the screen. Standard title is 'Booked on screen'.
+The meeting start and end time is defined by the user when run.
+To avoid double booking a check is run to see if the start and/or end time is in conflict with an already booked meeting. '''
+
 def bookMeeting():
     startTime = input('Write start time: ')
     endTime = input('Write end time: ')
