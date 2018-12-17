@@ -14,6 +14,7 @@ After it's logged in, it saves all of today's meetings into a list called calend
 Lastly a for loop is run through the items in the calendarItems list and saves the meetings start and end times, title and organizer into the dictionary meetingDict.'''
 
 def calendarIteration():
+    global meetingDict, busyTimes, busyTimesFlat, account, tz, year, month, day
     dst = time.localtime().tm_isdst
     calendarItems = []
     now = datetime.datetime.now()
@@ -40,9 +41,6 @@ def calendarIteration():
     counter0 = 0
     counter1 = 1
     counter2 = 2
-    global meetingDict
-    global busyTimes
-    global busyTimesFlat
     meetingDict = {}
     busyTimes = []
     for events in calendarItems:
@@ -51,7 +49,7 @@ def calendarIteration():
             meetingDict[endTimeName+str(counter1)] = (str(calendarItems[counter0][1])[11:16])
             meetingDict[titleName+str(counter1)] = (calendarItems[counter0][2])
             meetingDict[organizerName+str(counter1)] = (calendarItems[counter0][3].name)
-            busyTimes = busyTimes+[list(range(int(meetingDict['meetingStartTime_'+str(counter1)].replace(':','')),int(meetingDict['meetingEndTime_'+str(counter1)].replace(':',''))+1))]
+            busyTimes = busyTimes+[list(range(int(meetingDict['meetingStartTime_'+str(counter1)].replace(":","")),int(meetingDict['meetingEndTime_'+str(counter1)].replace(":",""))+1))]
             busyTimesFlat = [item for sublist in busyTimes for item in sublist]
             counter0 = counter1
             counter1 = counter2
