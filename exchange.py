@@ -11,10 +11,10 @@ If dst == 1 it's summer and if dst == 0 it's winter.
 
 It then gets the login credentials from the loginCredentials.py file and logs into Microsoft Exchange.
 After it's logged in, it saves all of today's meetings into a list called calendarItems.
-Lastly a for loop is run through the items in the calendarItems list and saves the meetings start and end times, title and organizer into the dictionary meetingDict.'''
+Lastly a for loop is run through the items in the calendarItems list and saves the meetings start times, end times and organizer into meetingList.'''
 
 def calendarIteration():
-    global meetingDict, busyTimes, busyTimesFlat, account, tz, year, month, day
+    global meetingList, busyTimes, busyTimesFlat, account, tz, year, month, day
     dst = time.localtime().tm_isdst
     calendarItems = []
     now = datetime.datetime.now()
@@ -28,34 +28,22 @@ def calendarIteration():
         )
     if dst == 0:
         for item in items:
-            today_events = [item.start + datetime.timedelta(hours=1), item.end + datetime.timedelta(hours=1), item.subject, item.organizer]
+            today_events = [item.start + datetime.timedelta(hours=1), item.end + datetime.timedelta(hours=1), item.organizer]
             calendarItems.append(today_events)
     else:
         for item in items:
-            today_events = [item.start, item.end, item.subject, item.organizer]
+            today_events = [item.start, item.end, item.organizer]
             calendarItems.append(today_events)
-    startTimeName = 'meetingStartTime_'
-    endTimeName = 'meetingEndTime_'
-    titleName = 'meetingTitle_'
-    organizerName = 'meetingOrganizer_'
-    counter0 = 0
-    counter1 = 1
-    counter2 = 2
-    meetingDict = {}
+    meetingList = []
     busyTimes = []
+    busyTimesFlat = []
+    counter = 0
     for events in calendarItems:
-        try:
-            meetingDict[startTimeName+str(counter1)] = (str(calendarItems[counter0][0])[11:16])
-            meetingDict[endTimeName+str(counter1)] = (str(calendarItems[counter0][1])[11:16])
-            meetingDict[titleName+str(counter1)] = (calendarItems[counter0][2])
-            meetingDict[organizerName+str(counter1)] = (calendarItems[counter0][3].name)
-            busyTimes = busyTimes+[list(range(int(meetingDict['meetingStartTime_'+str(counter1)].replace(":","")),int(meetingDict['meetingEndTime_'+str(counter1)].replace(":",""))+1))]
-            busyTimesFlat = [item for sublist in busyTimes for item in sublist]
-            counter0 = counter1
-            counter1 = counter2
-            counter2 += 1
-        except:
-                pass
+        tempDict = {'startTime':str(calendarItems[counter][0])[11:16], "endTime":str(calendarItems[counter][1])[11:16], "organizer":calendarItems[counter][2].name}
+        busyTimes = busyTimes+[list(range(int(tempDict['startTime'].replace(":","")),(int(tempDict['endTime'].replace(":","")))+1))]
+        busyTimesFlat = [item for sublist in busyTimes for item in sublist]
+        meetingList.append(tempDict)
+        counter += 1
 
 '''  bookMeeting is a function to book a meeting directly on the screen. Standard title is 'Booked on screen'.
 The meeting start and end time is defined by the user when run.
