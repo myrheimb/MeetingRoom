@@ -1,0 +1,205 @@
+<html>
+
+<head>
+	<meta charset='utf-8' />
+	<link rel="icon" href="./media/book.png">
+	<link href='./css/style.css' rel='stylesheet' />
+	<link href='./css/bootstrap.min.css' rel='stylesheet' />
+	<script src='./js/jquery.min.js'></script>
+	<script type='text/javascript' src='/eel.js'></script>
+
+	<script>
+        // Add a clock to the main page using jQuery.
+		let setTime = function() {
+            var dt = new Date();
+            $("#clock").text(("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2));
+        }
+
+        // Set interval to update the clock.
+        setInterval(setTime, 500);
+
+        $(document).ready(function() {
+            eel.roomAvailability() // Runs the Python function roomAvailability to set the correct backgroundColor and availability text on document.ready.
+        });
+
+        // Makes the JavaScript function alertBusy available for Python to alert the user if there is an existing meeting inside the specified times when trying to book a meeting.
+        // The alert will be inserted into the timepicker div and the page will be reloaded after 4 seconds.
+        eel.expose(busyBackground);
+		function busyBackground() {
+			document.body.style.backgroundColor = "#cc0000";
+			var div = document.getElementById('availability');
+			div.innerHTML = '<h3 style="color: #cc0000; text-align: center;">Busy</h3>';
+		};
+
+        // Makes the JavaScript function busyBackground available for Python to change backgroundColor and availability text.
+        // The text "Busy" in red color will be inserted into the availability div.
+		eel.expose(availableBackground);
+		function availableBackground() {
+			document.body.style.backgroundColor = "green";
+			var div = document.getElementById('availability');
+			div.innerHTML = '<h3 style="color: green; text-align: center;">Available</h3>';
+		};
+
+        // A function to return to the main page after 30 seconds of inactivity to avoid interrupting the user.
+        // This is in case a user has left the screen on the new meeting page.
+        function idleReturnToMain() {
+            var t;
+            window.onload = resetTimer;
+            window.onmousemove = resetTimer;
+            window.onkeypress = resetTimer;
+            window.onclick = resetTimer;
+            window.onmousedown = resetTimer;
+
+            function returnToMain() {
+                window.location.replace("main.html");
+            }
+
+            function resetTimer() {
+                clearTimeout(t);
+                t = setTimeout(returnToMain, 30000) // Waits until 30 seconds of inactivity to refresh the calendar view
+            }
+        };
+        idleReturnToMain();
+	</script>
+</head>
+
+<body>
+
+	<div id="left-content">
+		<img src="./media/companylogo.png" class="companyLogo"></img>
+		<div id="clockdate" style="top:30%">
+			<div id="clockdate-wrapper" align="center">
+				<div id="clock" class="clock"></div>
+			</div>
+		</div>
+		<div id="meetingRoom"></div>
+		<div id='availability'></div>
+		<p class="leftButton"><a href="newmeeting.html"><img src="./media/plus.png" class="buttonImage" alt="Book meeting image"></a>Book now</p>
+        <p class="rightButton"><a href="main.html"><img src="./media/cancel.png" class="buttonImage" alt="Book meeting image"></a>Cancel</p>
+	</div>
+
+	<div id="right-content">
+        <!-- Adds a table containing 3 buttons and 1 alert.
+        The 3 buttons will allow the user to send predefined mails to report problems with AV equipment in the meeting room.
+        Only 1 mail per problem per day is permitted to avoid spam in the help desk mailbox.
+        The alert at the bottom of the page contains information about the help desk's mail address and phone number. -->
+		<table id="mailTable">
+			<tr>
+				<td>
+					<button type='submit' id="mailButtonVideo" value='video' class="btn btn-light" style="width: 300px;"><img src="./media/mail.png" class="mailImage">Report problem with projector/screen</button>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button type='submit' id="mailButtonAudio" value='audio' class="btn btn-light" style="width: 300px;"><img src="./media/mail.png" class="mailImage">Report problem with speakers/sound</button>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button type='submit' id="mailButtonCables" value='cables' class="btn btn-light" style="width: 300px;"><img src="./media/mail.png" class="mailImage">Report about missing cables</button>
+				</td>
+			</tr>
+            <tr>
+                <td>
+                    <div id='immediateHelp'></div>
+                </td>
+            </tr>
+		</table>
+	</div>
+
+	<script type="text/javascript">
+		var meetingRoomName; // Declare variable to store the name of the meeting room.
+        var phoneNumber; // Declare variable to store the help desk's phone number.
+        var mailAddress; // Declare variable to store the help desk's mail address.
+
+        // This function will send a mail to help desk saying that there is a problem with the projector/screen in the meeting room.
+        // It starts with an if statement that checks if today's date is not stored in the browsers local storage under the key 'video'.
+        // It will then send the mail if today's date was not stored and relocate the user to the main page.
+        // If today's date was stored in the browsers local storage, it will present the user with an alert saying that help desk has already been informed of this and relocate the user to the main page.
+        // Outside the if statement, at the end of the function, a key called 'video' will be created in the browsers local storage containing today's date as the value.
+		$("#mailButtonVideo").click(function() {
+			if (localStorage.getItem("video") !== Date().substring(0, 10)) {
+				eel.sendMail("Problems with projector/screen in meeting room " + meetingRoomName, "A user har reported problems with the projector/screen in meeting room " + meetingRoomName);
+                $('#mailButtonVideo').replaceWith("<div class='alert alert-success' style='width: 300px;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
+                setTimeout(function(){
+                    window.location.replace("main.html");
+                }, 5000);
+			} else {
+                $('#mailButtonVideo').replaceWith("<div class='alert alert-warning' style='width: 300px;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
+                setTimeout(function(){
+                    window.location.replace("main.html");
+                }, 5000);
+			}
+            localStorage.setItem("video", Date().substring(0, 10));
+		});
+
+        // This function will send a mail to help desk saying that there is a problem with the speakers/sound in the meeting room.
+        // It starts with an if statement that checks if today's date is not stored in the browsers local storage under the key 'audio'.
+        // It will then send the mail if today's date was not stored and relocate the user to the main page.
+        // If today's date was stored in the browsers local storage, it will present the user with an alert saying that help desk has already been informed of this and relocate the user to the main page.
+        // Outside the if statement, at the end of the function, a key called 'audio' will be created in the browsers local storage containing today's date as the value.
+		$("#mailButtonAudio").click(function() {
+			if (localStorage.getItem("audio") !== Date().substring(0, 10)) {
+				eel.sendMail("Problems with speakers/sound in meeting room " + meetingRoomName, "A user har reported problems with the speakers/sound in meeting room " + meetingRoomName);
+                $('#mailButtonAudio').replaceWith("<div class='alert alert-success' style='width: 300px;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
+                setTimeout(function(){
+                    window.location.replace("main.html");
+                }, 5000);
+            } else {
+                $('#mailButtonAudio').replaceWith("<div class='alert alert-warning' style='width: 300px;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
+                setTimeout(function(){
+                    window.location.replace("main.html");
+                }, 5000);
+			}
+			localStorage.setItem("audio", Date().substring(0, 10));
+		});
+
+        // This function will send a mail to help desk saying that there are cables missing in the meeting room.
+        // It starts with an if statement that checks if today's date is not stored in the browsers local storage under the key 'cables'.
+        // It will then send the mail if today's date was not stored and relocate the user to the main page.
+        // If today's date was stored in the browsers local storage, it will present the user with an alert saying that help desk has already been informed of this and relocate the user to the main page.
+        // Outside the if statement, at the end of the function, a key called 'cables' will be created in the browsers local storage containing today's date as the value.
+		$("#mailButtonCables").click(function() {
+			if (localStorage.getItem("cables") !== Date().substring(0, 10)) {
+				eel.sendMail("Cables missing in meeting room " + meetingRoomName, "A user har reported missing cables in meeting room " + meetingRoomName);
+                $('#mailButtonCables').replaceWith("<div class='alert alert-success' style='width: 300px;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
+                setTimeout(function(){
+                    window.location.replace("main.html");
+                }, 5000);
+			} else {
+                $('#mailButtonCables').replaceWith("<div class='alert alert-warning' style='width: 300px;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
+                setTimeout(function(){
+                    window.location.replace("main.html");
+                }, 5000);
+			}
+			localStorage.setItem("cables", Date().substring(0, 10));
+		});
+
+        // Function to get the name of the meeting room from Python, save it to the variable meetingRoom and insert it into the meetingRoom div.
+		async function getRoomName() {
+			let n = await eel.getRoomNamePy()();
+			meetingRoomName = n;
+            $('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomName + '</h4>');
+		}
+
+        // Function to get help desk's mail address from Python and save it to the variable mailAddress.
+        async function getMailAddress() {
+            let n = await eel.getMailAddressPy()();
+            mailAddress = n;
+        }
+
+        // Function to get help desk's phone number from Python, save it to the variable phoneNumber and insert it into the immediateHelp div alongside the mailAddress variable.
+        async function getPhoneNumber() {
+            let n = await eel.getPhoneNumberPy()();
+            phoneNumber = n;
+            $('#immediateHelp').replaceWith("<div class='alert alert-dark' id='immediateHelp' style='width: 300px; text-align:center;'>For other problems or questions,"+'</br>'+"send an email to "+'<strong>'+ mailAddress +'</strong>'+" or call help desk at: "+ '<strong>' + phoneNumber+ '</strong>'+"</div>");
+        }
+
+		getRoomName();
+        getMailAddress();
+        getPhoneNumber();
+	</script>
+
+</body>
+
+</html>

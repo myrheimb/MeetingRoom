@@ -1,0 +1,112 @@
+body {
+	font: 14px Arial, sans-serif;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.inner-content {
+	top: 2%;
+	bottom: 2%;
+	left: 2%;
+	right: 2%;
+	background-color: white;
+	width: 96%;
+	height: 96%;
+	border-radius: 2%;
+	position: absolute;
+}
+
+#left-content {
+	top: 3%;
+	bottom: 3%;
+	left: 2%;
+	background-color: #e6e6e6;
+	width: 38.5%;
+	height: 94%;
+	float: left;
+	position: relative;
+	border-radius: 2%;
+	max-height: 100%;
+}
+
+#right-content {
+	top: 3%;
+	bottom: 3%;
+	right: 2%;
+	background-color: #e6e6e6;
+	width: 57%;
+	height: 94%;
+	float: right;
+	position: relative;
+	border-radius: 2%;
+	max-height: 100%;
+}
+
+.clock {
+	font-size: 7vw;
+}
+
+.companyLogo {
+    margin-top: 5%;
+	width: 40%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.buttonImage {
+	padding-bottom: 5%;
+	width: 70%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.mailImage {
+	display: block;
+    width: 30px;
+	margin-right: auto;
+    margin-left: auto;
+}
+
+.leftButton {
+	position: absolute;
+	bottom: 3%;
+	left: 8%;
+	font-size: 16px;
+	width: 30%;
+	text-align: center;
+}
+
+.rightButton {
+	position: absolute;
+	bottom: 3%;
+	right: 8%;
+	font-size: 16px;
+	width: 30%;
+	text-align: center;
+}
+
+.saveButton {
+	position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 3%;
+	font-size: 16px;
+	width: 97px;
+    text-align: center;
+}
+
+#mailTable {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+#mailTable td {
+    padding: 10px;
+}
+
+input[type=text] {
+    width: 45%;
+}

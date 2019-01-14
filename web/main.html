@@ -1,0 +1,142 @@
+<html>
+
+<head>
+	<meta charset='utf-8' />
+	<link rel="icon" href="./media/book.png">
+	<link href='./css/style.css' rel='stylesheet' />
+	<link href='./css/bootstrap.min.css' rel='stylesheet' />
+	<link href='./css/fullcalendar.min.css' rel='stylesheet' />
+	<script src='./js/moment.min.js'></script>
+	<script src='./js/jquery.min.js'></script>
+	<script src='./js/fullcalendar.min.js'></script>
+	<script src='./js/locale-all.js'></script>
+	<script type='text/javascript' src='/eel.js'></script>
+	<script type="text/javascript">
+        // Add a clock to the main page using jQuery.
+		let setTime = function() {
+			var dt = new Date();
+			$("#clock").text(("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2));
+		}
+
+		// Set interval to update the clock.
+		setInterval(setTime, 500);
+
+		$(document).ready(function() {
+			var initialLocaleCode = 'no'; // When the document is ready, set the locale for the calendar
+			var scrollTime = moment().subtract(2, 'hours').format('HH:mm:ss'); // Set a variable for current time minus 2 hours to use for centering the calendar view.
+
+            // Add fullcalendar with your specified settings. This application is built with only today's view in mind.
+			$('#calendar').fullCalendar({
+				defaultView: 'agendaDay', // Default calendar view.
+				height: 'parent', // Height of the calendar.
+				header: false, // Whether to use the header or not.
+				locale: initialLocaleCode, // Specify country code.
+				buttonIcons: false, // Show the prev/next buttons
+				weekNumbers: true, // Show week numbers.
+				navLinks: false, // Enable/disable the ability to click day/week names to navigate views.
+				editable: false, // Ability to edit the calendar on screen or not.
+				nowIndicator: true, // Add the red line that indicate's the current time on the calendar.
+				allDaySlot: false, // Enable/disable an own segment of the calendar for all day events or not.
+				slotDuration: '00:15:00', // Specify the zoom level of the calendar view by changing the left side slotDuration.
+				minTime: '06:00:00', // What time the calendar view will start on.
+				maxTime: '22:00:00', // What time the calendar view will stop on.
+				slotLabelFormat: 'HH:mm', // Time format for the left side time slots.
+				slotLabelInterval: '00:30', // Specify at what interval the time slots will be labeled.
+				scrollTime: scrollTime, // What time the calendar will be scrolled to. Points to the scrollTime variable.
+				themeSystem: 'bootstrap4', // Which theme to use for the calendar.
+				businessHours: {
+					start: '08:00', // Start time (08:00 in this example) for business hours which will be slightly highlighted in the calendar view.
+					end: '15:30', // End time (15:30 in this example) for business hours which will be slightly highlighted in the calendar view.
+				},
+				eventLimit: true, // Allow 'more' link when too many events
+				events: {
+					url: 'events.json' // Specify source of where to find the events to insert into the calendar view.
+				}
+			});
+
+			eel.roomAvailability() // Runs the Python function roomAvailability to set the correct backgroundColor and availability text on document.ready.
+
+		});
+
+        // Fullcalendar command to fetch all events from the event source. Run every 2 seconds.
+		setInterval(function() {
+			$("#calendar").fullCalendar('refetchEvents')
+		}, 2000);
+
+        // Makes the JavaScript function busyBackground available for Python to change backgroundColor and availability text.
+        // The text "Busy" in red color will be inserted into the availability div.
+		eel.expose(busyBackground);
+		function busyBackground() {
+			document.body.style.backgroundColor = "#cc0000";
+			var div = document.getElementById('availability');
+			div.innerHTML = '<h3 style="color: #cc0000; text-align: center;">Busy</h3>';
+		}
+
+        // Makes the JavaScript function availableBackground available for Python to change backgroundColor and availability text.
+        // The text "Available" in green color will be inserted into the availability div.
+		eel.expose(availableBackground);
+		function availableBackground() {
+			document.body.style.backgroundColor = "green";
+			var div = document.getElementById('availability');
+			div.innerHTML = '<h3 style="color: green; text-align: center;">Available</h3>';
+		}
+
+        // A function to center the scrollTime of the calendar view after 30 seconds of inactivity to avoid interrupting the user.
+        // In the lack of a better method in fullcalendar, this is achieved by navigating to yesterday and back to today in the calendar view.
+		function idleCenterCalendarView() {
+			var t;
+			window.onload = resetTimer;
+			window.onmousemove = resetTimer;
+			window.onkeypress = resetTimer;
+			window.onclick = resetTimer;
+			window.onmousedown = resetTimer;
+
+			function centerCalendarView() {
+				$('#calendar').fullCalendar('prev');
+				$('#calendar').fullCalendar('next');
+			}
+
+			function resetTimer() {
+				clearTimeout(t);
+				t = setTimeout(centerCalendarView, 30000) // Waits until 30 seconds of inactivity to refresh the calendar view
+			}
+		};
+		idleCenterCalendarView();
+	</script>
+</head>
+
+<body>
+
+	<div id='left-content'>
+		<img src='./media/companylogo.png' class='companyLogo'></img>
+		<div id='clockdate' style='top:30%'>
+			<div id='clockdate-wrapper' align='center'>
+				<div id='clock' class='clock'></div>
+			</div>
+		</div>
+		<div id="meetingRoom"></div>
+		<div id='availability'></div>
+		<p class='leftButton'><a href='newmeeting.html'><img src='./media/plus.png' class='buttonImage' alt='Book meeting image'></a>Book now</p>
+		<p class='rightButton'><a href='help.html'><img src='./media/help.png' class='buttonImage' alt='Help image'></a>Help</p>
+	</div>
+
+
+	<div id='right-content'>
+		<div class='inner-content'>
+			<div id='calendar'></div>
+		</div>
+	</div>
+
+	<script>
+        // Function to get the name of the meeting room from Python and insert it into the meetingRoom div.
+		async function getRoomName() {
+			let n = await eel.getRoomNamePy()();
+			var meetingRoomName = n;
+            $('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomName + '</h4>');
+		}
+		getRoomName()
+	</script>
+
+</body>
+
+</html>

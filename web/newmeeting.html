@@ -1,0 +1,171 @@
+<html>
+
+<head>
+	<meta charset='utf-8' />
+	<link rel="icon" href="./media/book.png">
+	<link href='./css/style.css' rel='stylesheet' />
+	<link href='./css/bootstrap.min.css' rel='stylesheet' />
+	<link href='./css/jquery.timepicker.css' rel='stylesheet' />
+	<script src='./js/jquery.min.js'></script>
+	<script src='./js/moment.min.js'></script>
+	<script src='./js/jquery.timepicker.min.js'></script>
+	<script type='text/javascript' src='/eel.js'></script>
+
+	<script>
+        // Add a clock to the main page using jQuery.
+        let setTime = function() {
+			var dt = new Date();
+			$("#clock").text(("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2));
+		}
+
+        // Adds a variable containing the current time using moment to be used in limiting the possible times in timepicker.
+        var currentTime = moment().format("HH");
+
+        // Set interval to update the clock.
+        setInterval(setTime, 500);
+
+		$(document).ready(function() {
+			eel.roomAvailability() // Runs the Python function roomAvailability to set the correct backgroundColor and availability text on document.ready.
+		});
+
+        // Makes the JavaScript function alertBusy available for Python to alert the user if there is an existing meeting inside the specified times when trying to book a meeting.
+        // The alert will be inserted into the timepicker div and the page will be reloaded after 4 seconds.
+		eel.expose(alertBusy);
+			function alertBusy() {
+                $('div#timepicker').replaceWith("<div class='alert alert-warning' style='width: 300px; margin-left:auto; margin-right:auto; margin-top: 15%; margin-bottom:15%;'>There is an existing meeting inside the specified times."+'</br>'+"Try again with new times.</div>");
+                setTimeout(function(){
+                    window.location.replace("newmeeting.html");
+                }, 4000);
+			}
+
+        // Makes the JavaScript function busyBackground available for Python to change backgroundColor and availability text.
+        // The text "Busy" in red color will be inserted into the availability div.
+        eel.expose(busyBackground);
+        function busyBackground() {
+            document.body.style.backgroundColor = "#cc0000";
+            var div = document.getElementById('availability');
+            div.innerHTML = '<h3 style="color: #cc0000; text-align: center;">Busy</h3>';
+        }
+
+        // Makes the JavaScript function availableBackground available for Python to change backgroundColor and availability text.
+        // The text "Available" in green color will be inserted into the availability div.
+        eel.expose(availableBackground);
+        function availableBackground() {
+            document.body.style.backgroundColor = "green";
+            var div = document.getElementById('availability');
+            div.innerHTML = '<h3 style="color: green; text-align: center;">Available</h3>';
+        }
+
+        // A function to return to the main page after 30 seconds of inactivity to avoid interrupting the user.
+        // This is in case a user has left the screen on the new meeting page.
+        function idleReturnToMain() {
+            var t;
+            window.onload = resetTimer;
+            window.onmousemove = resetTimer;
+            window.onkeypress = resetTimer;
+            window.onclick = resetTimer;
+            window.onmousedown = resetTimer;
+
+            function returnToMain() {
+                window.location.replace("main.html");
+            }
+
+            function resetTimer() {
+                clearTimeout(t);
+                t = setTimeout(returnToMain, 30000) // Waits until 30 seconds of inactivity to refresh the calendar view
+            }
+        };
+        idleReturnToMain();
+	</script>
+</head>
+
+<body>
+
+	<div id="left-content">
+		<img src="./media/companylogo.png" class="companyLogo"></img>
+		<div id="clockdate">
+			<div id="clockdate-wrapper" align="center">
+				<div id="clock" class="clock"></div>
+			</div>
+		</div>
+		<div id="meetingRoom"></div>
+		<div id='availability'></div>
+		<p class="leftButton"><a href="main.html"><img src="./media/cancel.png" class="buttonImage" alt="Book meeting image"></a>Cancel</p>
+		<p class="rightButton"><a href="help.html"><img src="./media/help.png" class="buttonImage" alt="Help image"></a>Help</p>
+	</div>
+
+	<div id="right-content">
+		<div id="timePicker" style="text-align: center; padding-top: 5%;">
+
+				<p>
+					<h4 style="padding:0; margin:0;">Select start time</h4>
+				</p>
+				<input id="setStartTime" type="text" class="time" style="text-align: center;" /></br>
+				<button id="setStartTimeButton" style="font-size:16px; width:45%;" class="btn btn-light">Insert current time</button>
+                <!-- The button above will insert the current time into the start time input field when clicked. -->
+
+			<script>
+                // This loads the jQuery timepicker with the following settings. The comments below apply to the setEndTime function as well.
+				$(function() {
+                    $('#setStartTime').timepicker({
+                        'timeFormat': 'H:i', // Time format. 24h is default.
+                        'step' : 15, // Specified in minutes. This determines how big of a jump there is between each line in the scrollable list of times.
+                        'minTime' : currentTime, // Specified in by using either only hours or hours and minutes. By using currentTime here, it removes all times before the current time to shorten the list of times.
+                        'maxTime' : "22", // Specified in by using either only hours or hours and minutes. This excludes all times after the specified time.
+                     });
+                    $('#setStartTimeButton').on('click', function (){
+                        $('#setStartTime').timepicker('setTime', new Date());
+                    });
+                });
+            </script>
+				<p>
+					<h4 style="padding:0; margin:0;">Select end time</h4>
+				</p>
+				<p>
+					<input id="setEndTime" type="text" class="time" style="text-align: center;" />
+				</p>
+				</br>
+
+			<script>
+				$(function() {
+                    $('#setEndTime').timepicker({
+                        'timeFormat': 'H:i',
+                        'step' : 15,
+                        'minTime' : currentTime,
+                        'maxTime' : "22",
+                    });
+                });
+            </script>
+		</div>
+		<p class="saveButton"><button type='submit' id="bookButton" value='Book meeting' class="btn btn-light" /><img src="./media/book.png" class="buttonImage">Book meeting</button></p>
+
+		<script type="text/javascript">
+            // This function will take the start and end times, remove the ":" and send it to the Python function bookMeeting in the exchange.py file.
+            // Lastly, the Python function will redirect the user to the main page by using the exposed function redirectMain.
+			$("#bookButton").click(function() {
+				var arg1 = $("#setStartTime").val();
+				var arg2 = $("#setEndTime").val();
+				arg1 = arg1.replace(/:/, '');
+				arg2 = arg2.replace(/:/, '');
+				eel.bookMeeting(arg1, arg2);
+			});
+
+            // Makes the function redirectMain available to Python to redirect the user to the main page.
+			eel.expose(redirectMain);
+			function redirectMain() {
+				window.location.replace("main.html");
+			}
+
+            // Function to get the name of the meeting room from Python and insert it into the meetingRoom div.
+			async function getRoomName() {
+				let n = await eel.getRoomNamePy()();
+				var meetingRoomName = n;
+				$('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomName + '</h4>');
+			}
+			getRoomName()
+		</script>
+	</div>
+
+</body>
+
+</html>
