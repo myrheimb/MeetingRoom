@@ -104,7 +104,7 @@ def sendMail(arg1, arg2):
     except:
         print("Mail about " + arg1 + " failed.")
 
-''' The following 2 functions makes the name of the meeting room and the help desk's phone number available to use by JavaScript/HTML. '''
+''' The following 3 functions makes the name of the meeting room and the help desk's phone number and mail address available to use by JavaScript/HTML. '''
 
 @eel.expose
 def getRoomNamePy():
