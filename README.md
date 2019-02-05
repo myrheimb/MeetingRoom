@@ -17,18 +17,18 @@ pip install eel exchangelib datetime apscheduler
 
 ### Images of the GUI and functionality
 
-![Main available](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/01%20-%20Main%20available.png)
+![Main available](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/01%20Main%20available.png)
 
-![Main busy](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/02%20-%20Main%20busy.png)
+![Main busy](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/02%20Main%20busy.png)
 
-![Book](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/03%20-%20Book.png)
+![Book](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/03%20Book.png)
 
-![Timepicker](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/04%20-%20Timepicker.png)
+![Timepicker](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/04%20Timepicker.png)
 
-![Book conflict](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/05%20-%20Book%20conflict.png)
+![Book conflict](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/05%20Book%20conflict.png)
 
-![Help](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/06%20-%20Help.png)
+![Help](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/06%20Help.png)
 
-![Sent](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/07%20-%20Sent.png)
+![Sent](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/07%20Sent.png)
 
-![Already sent](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/08%20-%20Already%20sent.png)
+![Already sent](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/08%20Already%20sent.png)
