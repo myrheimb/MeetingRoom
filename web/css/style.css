@@ -22,7 +22,7 @@ body {
 	position: relative;
 	border-radius: 2%;
 	max-height: 100%;
-    max-width: 39%;
+    	max-width: 39%;
 }
 
 #right-content {
@@ -35,7 +35,7 @@ body {
 	position: relative;
 	border-radius: 2%;
 	max-height: 100%;
-    max-width: 55%;
+    	max-width: 55%;
 }
 
 .clock {
@@ -43,11 +43,11 @@ body {
 }
 
 .companyLogo {
-    width: 50%;
-    margin-top: 5%;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+	width: 50%;
+	margin-top: 5%;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
 }
 
 .buttonImage {
@@ -60,9 +60,9 @@ body {
 
 .mailImage {
 	display: block;
-    width: 30px;
+	width: 30px;
 	margin-right: auto;
-    margin-left: auto;
+	margin-left: auto;
 }
 
 .leftButton {
@@ -85,22 +85,22 @@ body {
 
 .saveButton {
 	margin-left: auto;
-    margin-right: auto;
+	margin-right: auto;
 	font-size: 16px;
 	width: 97px;
-    text-align: center;
+	text-align: center;
 }
 
 #mailTable {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 5%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5%;
 }
 
 #mailTable td {
-    padding: 10px;
+	padding: 10px;
 }
 
 input[type=text] {
-    width: 45%;
+	width: 45%;
 }
