@@ -23,7 +23,6 @@
 
         // Set interval to update the clock.
         setInterval(setTime, 500);
-
 		$(document).ready(function() {
 			eel.roomAvailability() // Runs the Python function roomAvailability to set the correct backgroundColor and availability text on document.ready.
 		});
@@ -81,20 +80,20 @@
 
 <body>
 
-	<div id="left-content">
+	<div id="left-content" class="col-5">
 		<img src="./media/companylogo.png" class="companyLogo"></img>
-		<div id="clockdate">
+		<div id='clockdate' style='top:30%'>
 			<div id="clockdate-wrapper" align="center">
 				<div id="clock" class="clock"></div>
 			</div>
 		</div>
 		<div id="meetingRoom"></div>
 		<div id='availability'></div>
-		<p class="leftButton"><a href="main.html"><img src="./media/cancel.png" class="buttonImage" alt="Book meeting image"></a>Cancel</p>
-		<p class="rightButton"><a href="help.html"><img src="./media/help.png" class="buttonImage" alt="Help image"></a>Help</p>
+		<p class="leftButton"><a href="main.html"><img src="./media/cancel.png" style="width: 70%" alt="Book meeting image"></a>Cancel</p>
+		<p class="rightButton"><a href="help.html"><img src="./media/help.png" style="width: 70%" alt="Help image"></a>Help</p>
 	</div>
 
-	<div id="right-content">
+	<div id="right-content" class="col-7">
 		<div id="timePicker" style="text-align: center; padding-top: 5%;">
 
 				<p>
@@ -104,9 +103,18 @@
 				<button id="setStartTimeButton" style="font-size:16px; width:45%;" class="btn btn-light">Insert current time</button>
                 <!-- The button above will insert the current time into the start time input field when clicked. -->
 
+				<p>
+					<h4 style="padding:0; margin:0;">Select end time</h4>
+				</p>
+				<p>
+					<input id="setEndTime" type="text" class="time" style="text-align: center;" />
+				</p>
+				</br>
+                <p class="saveButton"><button type='submit' id="bookButton" value='Book meeting' class="btn btn-light" /><img src="./media/book.png" class="buttonImage">Book meeting</button></p>
+
 			<script>
                 // This loads the jQuery timepicker with the following settings. The comments below apply to the setEndTime function as well.
-				$(function() {
+                $(function() {
                     $('#setStartTime').timepicker({
                         'timeFormat': 'H:i', // Time format. 24h is default.
                         'step' : 15, // Specified in minutes. This determines how big of a jump there is between each line in the scrollable list of times.
@@ -117,16 +125,6 @@
                         $('#setStartTime').timepicker('setTime', new Date());
                     });
                 });
-            </script>
-				<p>
-					<h4 style="padding:0; margin:0;">Select end time</h4>
-				</p>
-				<p>
-					<input id="setEndTime" type="text" class="time" style="text-align: center;" />
-				</p>
-				</br>
-
-			<script>
 				$(function() {
                     $('#setEndTime').timepicker({
                         'timeFormat': 'H:i',
@@ -137,7 +135,7 @@
                 });
             </script>
 		</div>
-		<p class="saveButton"><button type='submit' id="bookButton" value='Book meeting' class="btn btn-light" /><img src="./media/book.png" class="buttonImage">Book meeting</button></p>
+    </div>
 
 		<script type="text/javascript">
             // This function will take the start and end times, remove the ":" and send it to the Python function bookMeeting in the exchange.py file.
@@ -157,14 +155,13 @@
 			}
 
             // Function to get the name of the meeting room from Python and insert it into the meetingRoom div.
-			async function getRoomName() {
-				let n = await eel.getRoomNamePy()();
-				var meetingRoomName = n;
-				$('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomName + '</h4>');
+			async function getRoomDisplayName() {
+				let n = await eel.getRoomDisplayNamePy()();
+				var meetingRoomDisplayName = n;
+				$('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomDisplayName + '</h4>');
 			}
-			getRoomName()
+			getRoomDisplayName()
 		</script>
-	</div>
 
 </body>
 
