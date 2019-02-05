@@ -65,7 +65,7 @@
 
 <body>
 
-	<div id="left-content">
+	<div id="left-content" class="col-5">
 		<img src="./media/companylogo.png" class="companyLogo"></img>
 		<div id="clockdate" style="top:30%">
 			<div id="clockdate-wrapper" align="center">
@@ -74,11 +74,11 @@
 		</div>
 		<div id="meetingRoom"></div>
 		<div id='availability'></div>
-		<p class="leftButton"><a href="newmeeting.html"><img src="./media/plus.png" class="buttonImage" alt="Book meeting image"></a>Book now</p>
-        <p class="rightButton"><a href="main.html"><img src="./media/cancel.png" class="buttonImage" alt="Book meeting image"></a>Cancel</p>
+		<p class="leftButton"><a href="newmeeting.html"><img src="./media/plus.png" style="width: 70%" alt="Book meeting image"></a>Book now</p>
+        <p class="rightButton"><a href="main.html"><img src="./media/cancel.png" style="width: 70%" alt="Book meeting image"></a>Cancel</p>
 	</div>
 
-	<div id="right-content">
+	<div id="right-content" class="col-7">
         <!-- Adds a table containing 3 buttons and 1 alert.
         The 3 buttons will allow the user to send predefined mails to report problems with AV equipment in the meeting room.
         Only 1 mail per problem per day is permitted to avoid spam in the help desk mailbox.
@@ -108,7 +108,7 @@
 	</div>
 
 	<script type="text/javascript">
-		var meetingRoomName; // Declare variable to store the name of the meeting room.
+	var meetingRoomName; // Declare variable to store the name of the meeting room.
         var phoneNumber; // Declare variable to store the help desk's phone number.
         var mailAddress; // Declare variable to store the help desk's mail address.
 
@@ -120,12 +120,12 @@
 		$("#mailButtonVideo").click(function() {
 			if (localStorage.getItem("video") !== Date().substring(0, 10)) {
 				eel.sendMail("Problems with projector/screen in meeting room " + meetingRoomName, "A user har reported problems with the projector/screen in meeting room " + meetingRoomName);
-                $('#mailButtonVideo').replaceWith("<div class='alert alert-success' style='width: 300px;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
+                $('#mailTable').replaceWith("<div class='alert alert-success' style='width: 300px; top: 15%; margin-left: auto; margin-right: auto;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
                 setTimeout(function(){
                     window.location.replace("main.html");
                 }, 5000);
 			} else {
-                $('#mailButtonVideo').replaceWith("<div class='alert alert-warning' style='width: 300px;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
+                $('#mailTable').replaceWith("<div class='alert alert-warning' style='width: 300px; top: 15%; margin-left: auto; margin-right: auto;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
                 setTimeout(function(){
                     window.location.replace("main.html");
                 }, 5000);
@@ -141,12 +141,12 @@
 		$("#mailButtonAudio").click(function() {
 			if (localStorage.getItem("audio") !== Date().substring(0, 10)) {
 				eel.sendMail("Problems with speakers/sound in meeting room " + meetingRoomName, "A user har reported problems with the speakers/sound in meeting room " + meetingRoomName);
-                $('#mailButtonAudio').replaceWith("<div class='alert alert-success' style='width: 300px;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
+                $('#mailTable').replaceWith("<div class='alert alert-success' style='width: 300px; top: 15%; margin-left: auto; margin-right: auto;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
                 setTimeout(function(){
                     window.location.replace("main.html");
                 }, 5000);
             } else {
-                $('#mailButtonAudio').replaceWith("<div class='alert alert-warning' style='width: 300px;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
+                $('#mailTable').replaceWith("<div class='alert alert-warning' style='width: 300px; top: 15%; margin-left: auto; margin-right: auto;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
                 setTimeout(function(){
                     window.location.replace("main.html");
                 }, 5000);
@@ -162,12 +162,12 @@
 		$("#mailButtonCables").click(function() {
 			if (localStorage.getItem("cables") !== Date().substring(0, 10)) {
 				eel.sendMail("Cables missing in meeting room " + meetingRoomName, "A user har reported missing cables in meeting room " + meetingRoomName);
-                $('#mailButtonCables').replaceWith("<div class='alert alert-success' style='width: 300px;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
+                $('#mailTable').replaceWith("<div class='alert alert-success' style='width: 300px; top: 15%; margin-left: auto; margin-right: auto;'>An email regarding this problem has been sent to help desk."+'</br>'+" Thank you for letting us know!</div>");
                 setTimeout(function(){
                     window.location.replace("main.html");
                 }, 5000);
 			} else {
-                $('#mailButtonCables').replaceWith("<div class='alert alert-warning' style='width: 300px;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
+                $('#mailTable').replaceWith("<div class='alert alert-warning' style='width: 300px; top: 15%; margin-left: auto; margin-right: auto;'>An email regarding this has already been sent to help desk today."+'</br>'+" Thank you for wanting to let us know!</div>");
                 setTimeout(function(){
                     window.location.replace("main.html");
                 }, 5000);
@@ -175,12 +175,18 @@
 			localStorage.setItem("cables", Date().substring(0, 10));
 		});
 
-        // Function to get the name of the meeting room from Python, save it to the variable meetingRoom and insert it into the meetingRoom div.
-		async function getRoomName() {
-			let n = await eel.getRoomNamePy()();
-			meetingRoomName = n;
-            $('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomName + '</h4>');
-		}
+        // Function to get the full name of the meeting room from Python and save it to the variable meetingRoomName. This will be used in the emails that can be sent to helpdesk.
+        async function getRoomName() {
+            let n = await eel.getRoomNamePy()();
+            meetingRoomName = n;
+        }
+
+        // Function to get the display name of the meeting room from Python, save it to the variable meetingRoomDisplayName and insert it into the meetingRoom div.
+        async function getRoomDisplayName() {
+            let n = await eel.getRoomDisplayNamePy()();
+            var meetingRoomDisplayName = n;
+            $('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomDisplayName + '</h4>');
+        }
 
         // Function to get help desk's mail address from Python and save it to the variable mailAddress.
         async function getMailAddress() {
@@ -195,7 +201,8 @@
             $('#immediateHelp').replaceWith("<div class='alert alert-dark' id='immediateHelp' style='width: 300px; text-align:center;'>For other problems or questions,"+'</br>'+"send an email to "+'<strong>'+ mailAddress +'</strong>'+" or call help desk at: "+ '<strong>' + phoneNumber+ '</strong>'+"</div>");
         }
 
-		getRoomName();
+	getRoomName();
+        getRoomDisplayName();
         getMailAddress();
         getPhoneNumber();
 	</script>
