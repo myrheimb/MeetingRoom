@@ -17,9 +17,9 @@ pip install eel exchangelib datetime apscheduler
 
 ### Images of the GUI and functionality
 
-![Main available](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/01%20Main%20available.png)
+![Main available](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/01%20%20Main%20available.png)
 
-![Main busy](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/02%20Main%20busy.png)
+![Main busy](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/02%20%20Main%20busy.png)
 
 ![Book](https://github.com/Myrheimb/MeetingRoom/blob/master/Images/03%20Book.png)
 
