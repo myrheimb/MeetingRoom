@@ -111,6 +111,10 @@ def getRoomNamePy():
     return config['name']
 
 @eel.expose
+def getRoomDisplayNamePy():
+    return config['displayName']
+
+@eel.expose
 def getPhoneNumberPy():
     return config['phone']
 
