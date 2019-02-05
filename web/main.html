@@ -81,6 +81,12 @@
 			div.innerHTML = '<h3 style="color: green; text-align: center;">Available</h3>';
 		}
 
+        // A function that navigates to today in the calendar view.
+        eel.expose(nextDay);
+		function nextDay() {
+			$('#calendar').fullCalendar('today');
+		}
+
         // A function to center the scrollTime of the calendar view after 30 seconds of inactivity to avoid interrupting the user.
         // In the lack of a better method in fullcalendar, this is achieved by navigating to yesterday and back to today in the calendar view.
 		function idleCenterCalendarView() {
@@ -97,8 +103,8 @@
 			}
 
 			function resetTimer() {
-				clearTimeout(t);
-				t = setTimeout(centerCalendarView, 30000) // Waits until 30 seconds of inactivity to refresh the calendar view
+				clearInterval(t);
+				t = setInterval(centerCalendarView, 30000) // Waits until 30 seconds of inactivity to refresh the calendar view
 			}
 		};
 		idleCenterCalendarView();
@@ -107,7 +113,7 @@
 
 <body>
 
-	<div id='left-content'>
+	<div id='left-content' class='col-5'>
 		<img src='./media/companylogo.png' class='companyLogo'></img>
 		<div id='clockdate' style='top:30%'>
 			<div id='clockdate-wrapper' align='center'>
@@ -116,12 +122,12 @@
 		</div>
 		<div id="meetingRoom"></div>
 		<div id='availability'></div>
-		<p class='leftButton'><a href='newmeeting.html'><img src='./media/plus.png' class='buttonImage' alt='Book meeting image'></a>Book now</p>
-		<p class='rightButton'><a href='help.html'><img src='./media/help.png' class='buttonImage' alt='Help image'></a>Help</p>
+		<p class='leftButton'><a href='newmeeting.html'><img src='./media/plus.png' style='width: 70%' alt='Book meeting image'></a>Book now</p>
+		<p class='rightButton'><a href='help.html'><img src='./media/help.png' style='width: 70%' alt='Help image'></a>Help</p>
 	</div>
 
 
-	<div id='right-content'>
+	<div id='right-content' class='col-7'>
 		<div class='inner-content'>
 			<div id='calendar'></div>
 		</div>
@@ -129,12 +135,12 @@
 
 	<script>
         // Function to get the name of the meeting room from Python and insert it into the meetingRoom div.
-		async function getRoomName() {
-			let n = await eel.getRoomNamePy()();
-			var meetingRoomName = n;
-            $('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomName + '</h4>');
+		async function getRoomDisplayName() {
+			let n = await eel.getRoomDisplayNamePy()();
+			var meetingRoomDisplayName = n;
+            $('#meetingRoom').replaceWith('<h4 style="text-align: center;">' + meetingRoomDisplayName + '</h4>');
 		}
-		getRoomName()
+		getRoomDisplayName()
 	</script>
 
 </body>
