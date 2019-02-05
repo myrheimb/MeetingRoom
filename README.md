@@ -12,7 +12,7 @@ This application uses the Eel module for Python which allows you to design GUI w
 Other dependencies are the python modules exchangelib which allows you to communicate with Microsoft Exchange, and datetime.
 
 ```
-pip install eel exchangelib datetime
+pip install eel exchangelib datetime apscheduler
 ```
 
 ### Images of the GUI and functionality
