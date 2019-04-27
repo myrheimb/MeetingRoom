@@ -37,7 +37,7 @@ def calendarIteration():
             calendarItems.append(today_events)
     else:
         for item in items:
-            today_events = [item.start, item.end, item.organizer]
+            today_events = [item.start + datetime.timedelta(hours=2), item.end + datetime.timedelta(hours=2), item.organizer]
             calendarItems.append(today_events)
     meetingList = []
     busyTimes = []
